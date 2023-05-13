@@ -28,7 +28,7 @@ export const Routing = () => {
               <Route exact path="/" element={<Home />} />
               <Route exact path="/generate" element={<Generate />} />
               <Route exact path="/search" element={<Search />} />
-              <Route exact path="/recipe/:id" element={<Recipe />} />
+              <Route exact path="/recipe" element={<Recipe />} />
             </Routes>
           </Router>
         </main>

@@ -6,12 +6,15 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import { Link } from "@mui/material";
 
 export const CardVideo = ({ post }) => {
   return (
     <Grid item xs={12} md={6}>
-      <CardActionArea component="a" href="#">
+      <CardActionArea
+        component="a"
+        href={`https://www.youtube.com/watch?v=${post.youTubeId}`}
+        target="_blank"
+      >
         <Card sx={{ display: "flex" }}>
           <CardContent sx={{ flex: 1 }}>
             <Typography component="h2" variant="h5">
@@ -28,24 +31,20 @@ export const CardVideo = ({ post }) => {
               alt={post.shortTitle}
             />
 
-            <Link
+            <p
               color="inherit"
-              noWrap
-              key={post.shortTitle}
-              variant="body2"
-              href={`https://www.youtube.com/watch?v=${post.youTubeId}`}
-              target="_blank"
-              sx={{ p: 1, flexShrink: 0 }}
               style={{
                 color: "brown",
                 fontSize: "1.5rem",
                 fontFamily: "fangsong",
                 float: "right",
                 textDecoration: "none",
+                p: 1,
+                flexShrink: 0,
               }}
             >
               Ver video ▶️
-            </Link>
+            </p>
           </CardContent>
         </Card>
       </CardActionArea>
@@ -54,10 +53,5 @@ export const CardVideo = ({ post }) => {
 };
 
 CardVideo.propTypes = {
-  post: PropTypes.shape({
-    views: PropTypes.string.isRequired,
-    youTubeId: PropTypes.string.isRequired,
-    thumbnail: PropTypes.string.isRequired,
-    shortTitle: PropTypes.string.isRequired,
-  }).isRequired,
+  post: PropTypes.object,
 };

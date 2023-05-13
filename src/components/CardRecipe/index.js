@@ -10,7 +10,7 @@ import CardMedia from "@mui/material/CardMedia";
 export const CardRecipe = ({ recipe }) => {
   return (
     <Grid item xs={12} md={6}>
-      <CardActionArea component="a" href={`/recipe/${recipe?.id}`}>
+      <CardActionArea component="a" href={`/recipe?id=${recipe?.id}`}>
         <Card sx={{ display: "flex" }}>
           <CardContent
             sx={{ flex: 1, height: recipe?.summary ? "30rem" : "20rem" }}

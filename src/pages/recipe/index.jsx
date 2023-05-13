@@ -1,107 +1,52 @@
-import {
-  Divider,
-  Grid,
-  Link,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
-import React from "react";
-import { CardRecipe } from "../../components/CardRecipe";
+import { Divider, Grid, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { MainFeaturedPost } from "../../components/MainFeaturedPost";
-import { FeaturedPost } from "../../components/FeaturedPost";
 import { Sidebar } from "../../components/Sidebar";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import { detailRecipe, grafico, similiarRecipes } from "../../utils/static";
 
+import {
+  getImgRecipe,
+  getRecipeDetail,
+  getRecipeSimilar,
+} from "../../services/recipes.service";
+import { useLocation } from "react-router-dom";
 export const Recipe = () => {
-  const mainFeaturedPost = {
-    title: "A healthy life starts with food",
-    description: "healthy recipes to stay healthy, eat better, live better",
-    image: "https://source.unsplash.com/random/?food-fitness/",
-    imageText: "main image description",
+  const [detailRecipe, setDetailRecipe] = useState({});
+  const [similiarRecipes, setSimiliarRecipes] = useState([]);
+  const [urlImgIngredient, setUrlImgIngredient] = useState("");
+  const [urlNutritionLabel, setNutritionLabel] = useState("");
+  const [priceBreakdownWidget, setPriceBreakdownWidget] = useState("");
+
+  const query = new URLSearchParams(useLocation().search);
+
+  useEffect(() => {
+    const recipeId = query?.get("id");
+    getDetail(recipeId);
+    getSimilar(recipeId);
+    getImgURL(recipeId);
+  }, []);
+
+  const getDetail = async (id) => {
+    const response = await getRecipeDetail(id);
+    setDetailRecipe(response?.data);
   };
 
-  const featuredPosts = [
-    {
-      title: "Recipe 1",
-      date: "Nov 12",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?noodles/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 2",
-      date: "Nov 11",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?salads/",
-      imageLabel: "Image Text",
-    },
-  ];
-
-  const sidebar = {
-    title: "Categories",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea",
-    archives: [
-      { title: "➡️ Main course", value: "main course", url: "#" },
-      { title: "➡️ Side dish", value: "side dish", url: "#" },
-      { title: "➡️ Dessert", value: "dessert", url: "#" },
-      { title: "➡️ Appetizer", value: "appetizer", url: "#" },
-      { title: "➡️ Salad", value: "salad", url: "#" },
-      { title: "➡️ Bread", value: "bread", url: "#" },
-      { title: "➡️ Breakfast", value: "breakfast", url: "#" },
-      { title: "➡️ Soup", value: "soup", url: "#" },
-      { title: "➡️ Beverage", value: "beverage", url: "#" },
-      { title: "➡️ Sauce", value: "sauce", url: "#" },
-      { title: "➡️ Marinade", value: "marinade", url: "#" },
-      { title: "➡️ Fingerfood", value: "fingerfood", url: "#" },
-      { title: "➡️ Snack", value: "snack", url: "#" },
-      { title: "➡️ Drink", value: "drink", url: "#" },
-    ],
-
-    social: [
-      { name: "GitHub", icon: GitHubIcon },
-      { name: "Twitter", icon: TwitterIcon },
-      { name: "Facebook", icon: FacebookIcon },
-    ],
+  const getSimilar = async (id) => {
+    const response = await getRecipeSimilar(id);
+    setSimiliarRecipes(response?.data);
   };
+  const getImgURL = async (id) => {
+    const respIngredients = await getImgRecipe(id, "card");
+    const respNutritionLabel = await getImgRecipe(id, "nutritionLabel");
+    const respPriceBreakdownWidget = await getImgRecipe(
+      id,
+      "priceBreakdownWidget",
+      2
+    );
 
-  const recipes = [
-    {
-      title: "Recipe 1",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?fruit-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 2",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?sandwich-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 3",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?cheese-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 4",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?meat-food/",
-      imageLabel: "Image Text",
-    },
-  ];
+    setUrlImgIngredient(respIngredients?.data?.url);
+    setNutritionLabel(respNutritionLabel?.data);
+    setPriceBreakdownWidget(respPriceBreakdownWidget.data);
+  };
 
   return (
     <>
@@ -129,6 +74,7 @@ export const Recipe = () => {
           <p style={{ textAlign: "right" }}>
             <a
               href={detailRecipe.sourceUrl}
+              rel="noreferrer"
               target="_blank"
               style={{ color: "blue", fontWeight: 600 }}
             >
@@ -136,16 +82,8 @@ export const Recipe = () => {
             </a>
           </p>
           <Divider />
-          <img
-            src="https://spoonacular.com/recipeCardImages/recipeCard-1683768873601.png"
-            alt="ingredients"
-          />
-          {/* body */}
-          {/* <Grid container spacing={4}>
-            {recipes.map((recipe) => (
-              <CardRecipe key={recipe.title} post={recipe} />
-            ))}
-          </Grid> */}
+          <img src={urlImgIngredient} alt="ingredients" />
+
           <Divider />
         </Grid>{" "}
         <Sidebar
@@ -154,6 +92,8 @@ export const Recipe = () => {
           description="Find recipes which are similar to the given one."
           archives={similiarRecipes}
           showFacts={true}
+          fact={urlNutritionLabel}
+          priceBreakdownWidget={priceBreakdownWidget}
         />
       </Grid>
     </>

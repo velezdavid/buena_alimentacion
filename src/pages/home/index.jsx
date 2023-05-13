@@ -33,9 +33,18 @@ export const Home = () => {
   }, []);
 
   const getRecipes = async () => {
-    const response = await getRecipesRandom(36);
-    if (response?.status === 200) {
-      setRecipes(response?.data?.recipes);
+    const recipesData = localStorage.getItem("recipes");
+    if (!recipesData) {
+      const response = await getRecipesRandom(36);
+      if (response?.status === 200) {
+        setRecipes(response?.data?.recipes);
+        localStorage.setItem(
+          "recipes",
+          JSON.stringify(response?.data?.recipes)
+        );
+      }
+    } else {
+      setRecipes(JSON.parse(recipesData));
     }
   };
 

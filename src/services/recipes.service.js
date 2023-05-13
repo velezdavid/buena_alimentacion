@@ -73,6 +73,39 @@ export const getRecipesVideo = async (search = "pasta", number = 10) => {
   }
 };
 
+export const getRecipeDetail = async (id) => {
+  try {
+    const response = await axios.get(
+      `${BASE_API_URL}/recipes/${id}/information?apiKey=${API_KEY}&includeNutrition=false`
+    );
+    return response || {};
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getRecipeSimilar = async (id) => {
+  try {
+    const response = await axios.get(
+      `${BASE_API_URL}/recipes/${id}/similar?apiKey=${API_KEY}`
+    );
+    return response || {};
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getImgRecipe = async (id, type, mode) => {
+  try {
+    const response = await axios.get(
+      `${BASE_API_URL}/recipes/${id}/${type}?apiKey=${API_KEY}&mode=${mode}`
+    );
+    return response || {};
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getImgFromPage = async (url = "") => {
   try {
     const imageSelector = ".recipeImage";
