@@ -4,6 +4,13 @@ export const sections = [
   { title: "Search Food Videos", url: "/search" },
 ];
 
+export const mainFeaturedRecipe = {
+  title: "A healthy life starts with food",
+  description: "healthy recipes to stay healthy, eat better, live better",
+  image: "https://source.unsplash.com/random/?food-fitness/",
+  imageText: "main image description",
+};
+
 export const grafico = `<style>
 .spoonacular-switch .slide-button,
 .toggle p span {

@@ -1,38 +1,30 @@
-import React from "react";
-import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
-import { CardRecipe } from "../../components/CardRecipe";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Divider,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { generateMealplanner } from "../../services/recipes.service";
 
 export const Generate = () => {
-  const resultRecipes = [
-    {
-      title: "Recipe 1",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?fruit-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 2",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?sandwich-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 3",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?cheese-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 4",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?meat-food/",
-      imageLabel: "Image Text",
-    },
-  ];
+  const [resultRecipes, setResultRecipes] = useState([]);
+  const [resultNutrients, setResultNutrients] = useState({});
+  const [getMeals, setGetMeals] = useState(false);
+  useEffect(() => {
+    getMealplanner();
+  }, [getMeals]);
+
+  const getMealplanner = async () => {
+    const response = await generateMealplanner("day");
+    setResultRecipes(response?.meals || []);
+    setResultNutrients(response?.nutrients || {});
+  };
 
   return (
     <Grid
@@ -62,8 +54,14 @@ export const Generate = () => {
         }}
       >
         <p>Click to generate meal plan</p>
-        <Button variant="contained">One Day</Button>
-        <Button variant="contained">One Week</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setGetMeals(!getMeals);
+          }}
+        >
+          One Day
+        </Button>
       </div>
       <Grid
         item
@@ -79,11 +77,51 @@ export const Generate = () => {
           Search recipes
         </Button> */}
       </Grid>
-      <Grid container spacing={4}>
-        {resultRecipes.map((recipe) => (
-          <CardRecipe key={recipe.title} post={recipe} />
-        ))}
-      </Grid>
+      <h1 style={{ fontSize: "2rem" }}>Daily recipes</h1>
+      <div>
+        {Object.keys(resultNutrients).length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+            <div className="">
+              <strong>Calories: </strong>
+              {`${resultNutrients?.calories}`}
+            </div>
+            <div className="">
+              <strong>Protein: </strong>
+              {`${resultNutrients?.protein}`}
+            </div>
+            <div className="">
+              <strong>Carbohydrates: </strong>
+              {`${resultNutrients?.carbohydrates}`}
+            </div>
+          </div>
+        )}
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {resultRecipes?.map((recipe) => (
+            <div key={recipe?.id} style={{ width: "33%", padding: "8px" }}>
+              <Card sx={{ maxWidth: 345 }}>
+                <CardMedia
+                  sx={{ height: 140 }}
+                  image={recipe?.urlImage}
+                  title={recipe?.title}
+                />
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    sx={{ height: 120 }}
+                  >
+                    {recipe.title}
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ float: "right" }}>
+                  <Button size="small">More</Button>
+                </CardActions>
+              </Card>
+            </div>
+          ))}
+        </div>
+      </div>
     </Grid>
   );
 };

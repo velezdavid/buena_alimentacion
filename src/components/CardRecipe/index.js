@@ -7,14 +7,16 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 
-export const CardRecipe = ({ post }) => {
+export const CardRecipe = ({ recipe }) => {
   return (
     <Grid item xs={12} md={6}>
-      <CardActionArea component="a" href="#">
+      <CardActionArea component="a" href={`/recipe/${recipe?.id}`}>
         <Card sx={{ display: "flex" }}>
-          <CardContent sx={{ flex: 1 }}>
+          <CardContent
+            sx={{ flex: 1, height: recipe?.summary ? "30rem" : "20rem" }}
+          >
             <Typography component="h2" variant="h5">
-              {post.title}
+              {recipe?.title}
             </Typography>
             <CardMedia
               component="img"
@@ -23,12 +25,21 @@ export const CardRecipe = ({ post }) => {
                 height: 200,
                 display: { xs: "none", sm: "block" },
               }}
-              image={post.image}
-              alt={post.imageLabel}
+              image={recipe?.image}
+              alt={recipe?.creditsText}
             />
-            <Typography variant="subtitle1" paragraph>
-              {post.description}
-            </Typography>
+            {recipe?.summary && (
+              <Typography
+                variant="subtitle1"
+                paragraph
+                dangerouslySetInnerHTML={{ __html: recipe?.summary }}
+                sx={{
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  height: "7rem",
+                }}
+              />
+            )}
             <Typography variant="subtitle1" color="primary">
               To prepare...
             </Typography>
@@ -40,11 +51,5 @@ export const CardRecipe = ({ post }) => {
 };
 
 CardRecipe.propTypes = {
-  post: PropTypes.shape({
-    date: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    imageLabel: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-  }).isRequired,
+  recipe: PropTypes.object,
 };

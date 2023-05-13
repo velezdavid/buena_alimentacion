@@ -1,4 +1,5 @@
 import {
+  Button,
   Divider,
   Grid,
   TextField,
@@ -6,47 +7,75 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CardRecipe } from "../../components/CardRecipe";
 import { MainFeaturedPost } from "../../components/MainFeaturedPost";
-import { FeaturedPost } from "../../components/FeaturedPost";
 import { Sidebar } from "../../components/Sidebar";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import {
+  getRecipesByIndredients,
+  getRecipesRandom,
+} from "../../services/recipes.service";
+import { FeaturedRecipe } from "../../components/FeaturedRecipe";
+import { mainFeaturedRecipe } from "../../utils/static";
 
 export const Home = () => {
-  const mainFeaturedPost = {
-    title: "A healthy life starts with food",
-    description: "healthy recipes to stay healthy, eat better, live better",
-    image: "https://source.unsplash.com/random/?food-fitness/",
-    imageText: "main image description",
+  const [recipes, setRecipes] = useState([]);
+  const [ingredients, setIngredients] = useState("");
+  const [start, setStart] = useState(2);
+  const [end, setEnd] = useState(6);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    getRecipes();
+  }, []);
+
+  const getRecipes = async () => {
+    const response = await getRecipesRandom(36);
+    if (response?.status === 200) {
+      setRecipes(response?.data?.recipes);
+    }
   };
 
-  const featuredPosts = [
-    {
-      title: "Recipe 1",
-      date: "Nov 12",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?noodles/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 2",
-      date: "Nov 11",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?salads/",
-      imageLabel: "Image Text",
-    },
-  ];
+  const searchRecipes = async () => {
+    if (ingredients) {
+      const response = await getRecipesByIndredients(36, ingredients);
+      if (response?.status === 200) {
+        setRecipes(response?.data);
+      }
+    } else {
+      const response = await getRecipesRandom(36);
+      if (response?.status === 200) {
+        setRecipes(response?.data?.recipes);
+      }
+    }
+  };
+
+  const handleIngredients = (event) => {
+    setIngredients(event.target.value);
+  };
+
+  const previous = () => {
+    if (start >= 4) {
+      setStart(start - 4);
+      setEnd(end - 4);
+      setPage(page - 1);
+    }
+  };
+  const next = () => {
+    if (end <= 36) {
+      setStart(start + 4);
+      setEnd(end + 4);
+      setPage(page + 1);
+    }
+  };
 
   const sidebar = {
     title: "Categories",
     titleCategory: "Explore these categories",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea",
+    description: "The type of recipe. See a full list of supported meal types.",
     archives: [
       { title: "➡️ Main course", value: "main course", url: "#" },
       { title: "➡️ Side dish", value: "side dish", url: "#" },
@@ -71,46 +100,15 @@ export const Home = () => {
     ],
   };
 
-  const recipes = [
-    {
-      title: "Recipe 1",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?fruit-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 2",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?sandwich-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 3",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?cheese-food/",
-      imageLabel: "Image Text",
-    },
-    {
-      title: "Recipe 4",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae libero eget nisl ullamcorper feugiat. Proin sit amet ex quam. In hac habitasse platea dictumst. Aliquam id felis ut velit laoreet tincidunt. Sed quis aliquam lacus, a finibus ante.",
-      image: "https://source.unsplash.com/random/?meat-food/",
-      imageLabel: "Image Text",
-    },
-  ];
-
   return (
     <>
-      <MainFeaturedPost post={mainFeaturedPost} />
+      <MainFeaturedPost post={mainFeaturedRecipe} />
       <Grid container spacing={4}>
-        {featuredPosts.map((post) => (
-          <FeaturedPost key={post.title} post={post} />
+        {recipes?.slice(0, 2)?.map((recipe) => (
+          <FeaturedRecipe key={recipe.id} recipe={recipe} />
         ))}
       </Grid>
-      <Grid container spacing={5} sx={{ mt: 3 }}>
+      <Grid container spacing={5} sx={{ mt: 3 }} id="body">
         <Grid
           item
           xs={12}
@@ -132,32 +130,33 @@ export const Home = () => {
             shopping) or minimize the ingredients that you don't currently have
             (post shopping).
           </p>
-          <Divider />
-          <Divider />
+          <Divider /> <Divider />
           {/* body */}
-          <Grid
-            item
-            xs={12}
-            md={8}
-            style={{ marginTop: "1rem", marginBottom: "1rem" }}
-          >
-            <TextField
-              id="filled-basic"
-              label="Ingredients"
-              variant="filled"
-              style={{ width: "100%" }}
-            />
-            {/* <Button
-          variant="outlined"
-          size="large"
-          style={{ float: "right", marginTop: "0.5rem" }}
-        >
-          Search recipes
-        </Button> */}
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={8}>
+              <TextField
+                id="filled-basic"
+                label="Ingredients"
+                variant="filled"
+                style={{ width: "100%" }}
+                value={ingredients}
+                onChange={handleIngredients}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Button
+                variant="outlined"
+                size="large"
+                style={{ float: "right", marginTop: "0.5rem" }}
+                onClick={searchRecipes}
+              >
+                Search recipes
+              </Button>
+            </Grid>
           </Grid>
           <Grid container spacing={4}>
-            {recipes.map((recipe) => (
-              <CardRecipe key={recipe.title} post={recipe} />
+            {recipes?.slice(start, end)?.map((recipe) => (
+              <CardRecipe key={recipe.title} recipe={recipe} />
             ))}
           </Grid>
           <Divider />
@@ -169,23 +168,13 @@ export const Home = () => {
             aria-label="Platform"
             style={{ float: "right", marginTop: "0.5rem" }}
           >
-            <ToggleButton
-              value="web"
-              onClick={() => {
-                console.log("Previous");
-              }}
-            >
+            <ToggleButton value="web" onClick={previous}>
               Previous
             </ToggleButton>
             <ToggleButton value="android" disabled>
-              1
+              {page}
             </ToggleButton>
-            <ToggleButton
-              value="ios"
-              onClick={() => {
-                console.log("Previous");
-              }}
-            >
+            <ToggleButton value="ios" onClick={next}>
               Next
             </ToggleButton>
           </ToggleButtonGroup>{" "}
@@ -195,6 +184,7 @@ export const Home = () => {
           description={sidebar.description}
           archives={sidebar.archives}
           social={sidebar.social}
+          setRecipes={setRecipes}
         />
       </Grid>
     </>
