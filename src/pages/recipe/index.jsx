@@ -15,7 +15,6 @@ export const Recipe = () => {
   const [urlImgIngredient, setUrlImgIngredient] = useState("");
   const [urlNutritionLabel, setNutritionLabel] = useState("");
   const [priceBreakdownWidget, setPriceBreakdownWidget] = useState("");
-
   const query = new URLSearchParams(useLocation().search);
 
   useEffect(() => {

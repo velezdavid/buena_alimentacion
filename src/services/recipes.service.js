@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_API_URL, API_KEY, DAYS } from "../utils/constants";
+import { BASE_API_URL, API_KEY } from "../utils/constants";
 import cheerio from "cheerio";
 
 export const getRecipesRandom = async (number = 10) => {
