@@ -1,10 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  #the Deployment Name
   name: minikube-react-app
 spec:
-  #the Number of Pods
   replicas: 2
   selector:
     matchLabels:
@@ -14,32 +12,8 @@ spec:
       labels:
         app: minikube-react-app
     spec:
-      # Container Details
       containers:
         - name: minikube-react-app
-          # Docker Image
-          image: dvelez100/minikube-react-app:v2
-          resources:
-            #cpu and memory limit
-            limits:
-              memory: "550Mi"
-              cpu: "500m"
+          image: dvelez100/minikube-react-app:v3
           ports:
-            #the port on which the app can be reached out inside the container
-            - containerPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  #the Serivce Name- it should match with the lable name of the deployment
-  name: minikube-react-app
-spec:
-  #type of the service
-  type: NodePort
-  selector:
-    app: minikube-react-app
-  ports:
-    - port: 3050
-      targetPort: 3000
-      protocol: TCP
-      nodePort: 31000
+            - containerPort: 80
